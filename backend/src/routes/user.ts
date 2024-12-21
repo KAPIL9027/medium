@@ -1,7 +1,7 @@
 
-import { Bindings } from './../../node_modules/hono/dist/types/types.d';
-import {PrismaClient} from '@prisma/client/edge'
-import { decode, sign, verify } from 'hono/jwt'
+import {PrismaClient} from '@prisma/client/edge';
+import {signupInput,signinInput,SigninType,SignupType, } from '@kapil0107/common-app';
+import {sign} from 'hono/jwt';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import {Hono} from 'hono';
 
@@ -17,11 +17,16 @@ const userRouter = new Hono<{
 
 userRouter.post('/signup',async (c)=>{
     try {
-    const signupData = await c.req.json();
+    const signupData: SignupType = await c.req.json();
+    const {success} = signupInput.safeParse(signupData);
+    if(!success){
+        c.status(411);
+        c.json({message: "Invalid Inputs!"});
+    }
     const prisma = new PrismaClient(
       {datasourceUrl: c.env.DATABASE_URL}
     ).$extends(withAccelerate());
-    
+
         const result = await prisma.user.create({
         data: {
             email: signupData.email,
@@ -47,7 +52,14 @@ userRouter.post('/signin',async (c)=>{
     const prisma = new PrismaClient(
         {datasourceUrl: c.env.DATABASE_URL}
       ).$extends(withAccelerate());
-    const signinData = await c.req.json();
+    const signinData: SigninType = await c.req.json();
+    const {success} = signinInput.safeParse(signinData);
+    if(!success){
+        c.status(411);
+        c.json({
+            message: "Invalid inputs!"
+        })
+    }
     const userExists = await prisma.user.findFirst({
         where: {
             email: signinData.email,
