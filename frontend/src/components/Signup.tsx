@@ -44,6 +44,7 @@ export const Signup = ()=>{
             return;
         }
         localStorage.setItem('userToken',token);
+        navigate('/blogs')
     }
     
     return (

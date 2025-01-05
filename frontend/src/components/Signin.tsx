@@ -1,4 +1,5 @@
-import {ChangeEvent, useState } from "react";
+import {ChangeEvent, useState,useEffect } from "react";
+import {useNavigate} from 'react-router-dom';
 import AuthHeader from "./AuthHeader";
 import LabeledInput from "./LabeledInput";
 import Quote from "./Quote";
@@ -7,10 +8,18 @@ import { SigninType } from "@kapil0107/common-app";
 
 
 export const Signin = ()=>{
-    
+    const navigate = useNavigate()
     const [email,setEmail] = useState<string>("");
     const [password,setPassword] = useState<string>("");
     const backend_url: string = import.meta.env.VITE_BACKEND_URL;
+
+    useEffect(()=>{
+            const userToken = localStorage.getItem('userToken');
+            if(userToken){
+                navigate('/blogs');
+            }
+        },[])
+
     const onSignIn: ()=> void = async ()=>{
         if(!email || !password){
             return;
@@ -33,6 +42,7 @@ export const Signin = ()=>{
             return;
         }
         localStorage.setItem('userToken',token);
+        navigate('/blogs')
     }
     return (
         <div className="xl:grid xl:grid-cols-2">
