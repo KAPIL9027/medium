@@ -11,7 +11,7 @@ const Blog = ()=>{
         title: "",
         description: ""
     });
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     
     const blogId = searchParams.get("id");
     const authorName = searchParams.get("name");
