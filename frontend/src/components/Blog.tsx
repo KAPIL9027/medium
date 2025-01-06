@@ -27,9 +27,6 @@ const Blog = ()=>{
         }
         const response = await fetch(`${backend_url}/blog/${blogId}`,options);
         const responseData = await response.json();
-        if(!responseData || responseData.message){
-            navigate('/blogs')
-        }
         setBlog({
             title: responseData?.blog?.title,
             description: responseData?.blog?.description
@@ -45,16 +42,38 @@ const Blog = ()=>{
     },[])
     return (
         <div className="flex w-screen h-screen">
-        <div className="flex flex-col gap-4 w-full p-8 xl:p-20 xl:w-3/4">
-        <h1 className="font-bold text-4xl xl:text-5xl">{blog?.title}</h1>
-        <p className="text-2xl xl:text-3xl">{blog?.description}</p>
+        {
+            (blog?.title && blog?.description ) ? (
+                <div className="flex flex-col w-full gap-4 p-8 xl:p-20 xl:w-3/4">
+        <h1 className="text-4xl font-bold xl:text-5xl">{blog?.title}</h1>
+        <p className="text-xl">{blog?.description}</p>
         </div>
-        <div className="hidden xl:flex xl:flex-col p-8 xl:py-20 xl:px-16 xl:gap-2">
-            <p className="font-semibold text-lg">Author</p>
-            <div className="flex gap-2 items-center">
+            )
+            :
+            (
+                <div className="w-full max-w-sm p-4 mx-auto mt-16">
+  <div className="flex space-x-4 animate-pulse">
+    <div className="flex-1 py-1 space-y-6">
+      <div className="h-2 rounded bg-slate-700"></div>
+      <div className="space-y-3">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="h-2 col-span-2 rounded bg-slate-700"></div>
+          <div className="h-2 col-span-1 rounded bg-slate-700"></div>
+        </div>
+        <div className="h-2 rounded bg-slate-700"></div>
+      </div>
+    </div>
+  </div>
+</div>
+            )
+        }
+        
+        <div className="hidden p-8 xl:flex xl:flex-col xl:py-20 xl:px-16 xl:gap-2">
+            <p className="text-lg font-semibold">Author</p>
+            <div className="flex items-center gap-2">
                 <Avatar initials={authorInitials}/>
                 <div className="flex flex-col gap-1">
-                    <h2 className="font-bold text-2xl">{authorName}</h2>
+                    <h2 className="text-2xl font-bold">{authorName}</h2>
                     <p className="text-lg">Mater of mirth, purveyor of puns, and the funniest person in the Kingdom.</p>
                 </div>
             </div>
